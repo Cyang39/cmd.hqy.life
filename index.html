@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>loading...</title>
+</head>
+<body>
+  <script>
+    const search = window.location.search.match(/q=([^&]*)/)
+    const cmdText = search ? search[1] : ""
+
+    const rules = [{
+      fmt: "yuque s _",
+      tpl: "https://www.yuque.com/search?q=${0}&related=true",
+      inf: "在我的语雀知识库中搜索",
+      lnk: ["yuque search _", "y s _", "y search _", "yq s _", "yq search _"]
+    }]
+
+    const baidu = function(cmdText) {
+      return "https://www.baidu.com/s?wd=" + cmdText.split("+").join("%20")
+    }
+
+    const matchRule = function (rule, cmdText) {
+      const _match = function (ruleText, cmdText) {
+        const ruleArr = ruleText.split(" ")
+        const cmdArr = cmdText.split("+")
+        if (ruleArr.length !== cmdArr.length) return false
+        for (let i = 0; i < ruleArr.length; i++) {
+          if (ruleArr[i] === "_") continue
+          if (ruleArr[i] !== cmdArr[i]) return false
+        }
+        return true
+      }
+      const ruleTextList = rule.lnk.concat([rule.fmt])
+      return ruleTextList.some(ruleText => _match(ruleText, cmdText))
+    }
+
+    const renderURL = function(rule, cmdText) {
+      function _render(tpl, params) {
+        for (let i = 0; i < params.length; i++) {
+          const reg = new RegExp("\\$\\{" + i + "\\}", "g");
+          tpl = tpl.replace(reg, params[i]);
+        }
+        return tpl;
+      }
+      const params = []
+      const ruleArr = rule.fmt.split(" ")
+      const cmdArr = cmdText.split("+")
+      ruleArr.forEach((word, i) => {
+        if(word === "_") params.push(cmdArr[i])
+      })
+      return _render(rule.tpl, params)
+    }
+
+    const theRule = rules.find(rule => matchRule(rule, cmdText))
+    if(theRule) {
+      window.location.href = renderURL(theRule, cmdText)
+    } else {
+      window.location.href = baidu(cmdText)
+    }
+    console.log(renderURL(theRule, cmdText))
+  </script>
+</body>
+
+</html>
