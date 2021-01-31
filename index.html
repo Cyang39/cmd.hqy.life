@@ -11,11 +11,13 @@
     const match = function (rule, cmdText) {
       const ruleArr = rule.split(" ")
       const cmdArr = cmdText.split("+")
-      for (let i = 0; i < ruleArr.length; i++) {
+      let i = 0
+      for (; i < ruleArr.length; i++) {
         if (ruleArr[i] === "_") continue
         if (ruleArr[i] === "$") return true
         if (ruleArr[i] !== cmdArr[i]) return false
       }
+      if(i < cmdArr.length) return false
       return true
     }
     const findRuleTpl = function (rule, rulesDB) {
