@@ -1,41 +1,27 @@
 <!DOCTYPE html>
 <html>
+
 <head>
   <meta charset="utf-8">
   <title>loading...</title>
 </head>
+
 <body>
   <script>
-    const search = window.location.search.match(/q=([^&]*)/)
-    const cmdText = search ? search[1] : ""
-
-    const rules = [{
-      fmt: "yuque s _",
-      tpl: "https://www.yuque.com/search?q=${0}&related=true",
-      inf: "在我的语雀知识库中搜索",
-      lnk: ["yuque search _", "y s _", "y search _", "yq s _", "yq search _"]
-    }]
-
-    const baidu = function(cmdText) {
-      return "https://www.baidu.com/s?wd=" + cmdText.split("+").join("%20")
-    }
-
-    const matchRule = function (rule, cmdText) {
-      const _match = function (ruleText, cmdText) {
-        const ruleArr = ruleText.split(" ")
-        const cmdArr = cmdText.split("+")
-        if (ruleArr.length !== cmdArr.length) return false
-        for (let i = 0; i < ruleArr.length; i++) {
-          if (ruleArr[i] === "_") continue
-          if (ruleArr[i] !== cmdArr[i]) return false
-        }
-        return true
+    const match = function (rule, cmdText) {
+      const ruleArr = rule.split(" ")
+      const cmdArr = cmdText.split("+")
+      for (let i = 0; i < ruleArr.length; i++) {
+        if (ruleArr[i] === "_") continue
+        if (ruleArr[i] === "$") return true
+        if (ruleArr[i] !== cmdArr[i]) return false
       }
-      const ruleTextList = rule.lnk.concat([rule.fmt])
-      return ruleTextList.some(ruleText => _match(ruleText, cmdText))
+      return true
     }
-
-    const renderURL = function(rule, cmdText) {
+    const findRuleTpl = function (rule, rulesDB) {
+      return rulesDB.find(r => r.fmt === rule || r.lnk.includes(rule)).tpl
+    }
+    const render = function (rule, cmd) {
       function _render(tpl, params) {
         for (let i = 0; i < params.length; i++) {
           const reg = new RegExp("\\$\\{" + i + "\\}", "g");
@@ -44,21 +30,67 @@
         return tpl;
       }
       const params = []
-      const ruleArr = rule.fmt.split(" ")
+      const ruleArr = rule.split(" ")
       const cmdArr = cmdText.split("+")
-      ruleArr.forEach((word, i) => {
-        if(word === "_") params.push(cmdArr[i])
-      })
-      return _render(rule.tpl, params)
+      for (let i = 0; i < ruleArr.length; i++) {
+        if (ruleArr[i] === "_") params.push(cmdArr[i])
+        if (ruleArr[i] === "$") {
+          params.push(cmdArr.slice(i).join("+"))
+          break
+        }
+      }
+      return _render(findRuleTpl(rule, rulesDB), params)
+    }
+    const bestRule = function(rules) {
+      const indexsOf$ = rules.map(r => r.indexOf("$"))
+      const lastIndex = Math.max(...indexsOf$)
+      return rules.find(r => r[lastIndex] === "$")
     }
 
-    const theRule = rules.find(rule => matchRule(rule, cmdText))
-    if(theRule) {
-      window.location.href = renderURL(theRule, cmdText)
+    const search = window.location.search.match(/q=([^&]*)/)
+    const cmdText = search ? search[1] : ""
+
+    const rulesDB = [{
+      fmt: "yuque search $",
+      tpl: "https://www.yuque.com/search?q=${0}&related=true",
+      inf: "在我的语雀知识库中搜索",
+      lnk: ["yuque s $", "y s $", "y search $", "yq s $", "yq search $"]
+    }, {
+      fmt: "yuque _ search $",
+      tpl: "https://www.yuque.com/miku/${0}/s?q=${1}",
+      inf: "在指定的 miku 的语雀知识库中搜索",
+      lnk: ["yuque _ s $", "y _ s $", "y _ search $", "yq _ s $", "yq _ search $"]
+    }, {
+      fmt: "zhihu $",
+      tpl: "https://www.zhihu.com/search?type=content&q=${0}",
+      inf: "在知乎中搜索",
+      lnk: ["z $", "zh $"]
+    }, {
+      fmt: "weibo $",
+      tpl: "https://s.weibo.com/weibo/${0}",
+      inf: "在微博中搜索",
+      lnk: ["w $", "wb $"]
+    }, {
+      fmt: "baidu $",
+      tpl: "https://www.baidu.com/s?wd=${0}",
+      inf: "百度搜索",
+      lnk: ["$"]        // <- Default Search Engine
+    }, {
+      fmt: "google $",
+      tpl: "https://www.google.com/search?q=${0}",
+      inf: "谷歌搜索",
+      lnk: ["g $"]
+    }]
+
+    const rules = rulesDB.reduce((res, cur) => res.concat([cur.fmt]).concat(cur.lnk), [])
+    const matchedRules = rules.filter(r => match(r, cmdText))
+    if (matchedRules.length > 0) {
+      const theRule = bestRule(matchedRules)
+      window.location.href = render(theRule, cmdText)
     } else {
-      window.location.href = baidu(cmdText)
+      window.document.body.innerText = "There is no match in your rules."
     }
-    console.log(renderURL(theRule, cmdText))
+
   </script>
 </body>
 
