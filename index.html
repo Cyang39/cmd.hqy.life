@@ -54,7 +54,9 @@
     const search = window.location.search.match(/q=([^&]*)/)
     const cmdText = search ? search[1] : ""
 
-    const rulesDB = JSON.parse(window.localStorage.getItem("rulesDB"))
+    const readLocal = window.localStorage.getItem("rulesDB")
+    if(!readLocal) window.location.href="/edit"
+    const rulesDB = JSON.parse(readLocal)
 
     const rules = rulesDB.reduce((res, cur) => res.concat([cur.fmt]).concat(cur.lnk), [])
     const matchedRules = rules.filter(r => match(r, cmdText))

@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Rules</title>
+</head>
+<body>
+  <textarea id="rules" name="rules" rows="40" cols="60"></textarea><br>
+  <button name="save">Save</button>
+  <script>
+    if(!window.localStorage.getItem("rulesDB")) {
+      // TODO: 初始化
+    }
+    window.document.getElementsByName("rules")[0].value = window.localStorage.getItem("rulesDB")
+    window.document.getElementsByName("save")[0].addEventListener("click", function() {
+      window.localStorage.setItem("rulesDB",  window.document.getElementsByName("rules")[0].value)
+    })
+  </script>
+</body>
+</html>
