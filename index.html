@@ -41,7 +41,11 @@
       }
       return _render(findRuleTpl(rule, rulesDB), params)
     }
-    const bestRule = function(rules) {
+    const bestRule = function (rules) {
+      const no_and$ = rules.find(r => !r.includes("$") && !r.includes("_"))
+      if (no_and$) return no_and$
+      const no$ = rules.find(r => !r.includes("$"))
+      if (no$) return no$
       const indexsOf$ = rules.map(r => r.indexOf("$"))
       const lastIndex = Math.max(...indexsOf$)
       return rules.find(r => r[lastIndex] === "$")
@@ -50,37 +54,7 @@
     const search = window.location.search.match(/q=([^&]*)/)
     const cmdText = search ? search[1] : ""
 
-    const rulesDB = [{
-      fmt: "yuque search $",
-      tpl: "https://www.yuque.com/search?q=${0}&related=true",
-      inf: "在我的语雀知识库中搜索",
-      lnk: ["yuque s $", "y s $", "y search $", "yq s $", "yq search $"]
-    }, {
-      fmt: "yuque _ search $",
-      tpl: "https://www.yuque.com/miku/${0}/s?q=${1}",
-      inf: "在指定的 miku 的语雀知识库中搜索",
-      lnk: ["yuque _ s $", "y _ s $", "y _ search $", "yq _ s $", "yq _ search $"]
-    }, {
-      fmt: "zhihu $",
-      tpl: "https://www.zhihu.com/search?type=content&q=${0}",
-      inf: "在知乎中搜索",
-      lnk: ["z $", "zh $"]
-    }, {
-      fmt: "weibo $",
-      tpl: "https://s.weibo.com/weibo/${0}",
-      inf: "在微博中搜索",
-      lnk: ["w $", "wb $"]
-    }, {
-      fmt: "baidu $",
-      tpl: "https://www.baidu.com/s?wd=${0}",
-      inf: "百度搜索",
-      lnk: ["$"]        // <- Default Search Engine
-    }, {
-      fmt: "google $",
-      tpl: "https://www.google.com/search?q=${0}",
-      inf: "谷歌搜索",
-      lnk: ["g $"]
-    }]
+    const rulesDB = JSON.parse(window.localStorage.getItem("rulesDB"))
 
     const rules = rulesDB.reduce((res, cur) => res.concat([cur.fmt]).concat(cur.lnk), [])
     const matchedRules = rules.filter(r => match(r, cmdText))
