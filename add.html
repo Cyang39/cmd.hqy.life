@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Add a cmd</title>
+</head>
+<body>
+  <div id="log"></div>
+  <script>
+    const log = window.document.getElementById("log")
+    const search = window.location.search.match(/tpl=([^&]*)/)
+    const search2 = window.location.search.match(/fmt=([^&]*)/)
+    const search3 = window.location.search.match(/inf=([^&]*)/)
+    const tplText = search ? window.decodeURIComponent(search[1]) : ""
+    const fmtText = search2 ? search2[1] : ""
+    const infText = search3 ? search3[1] : ""
+    const localData = window.localStorage.getItem("rulesDB")
+    if(!localData) {
+      log.innerText = "Info: no database on localstorage."
+    } else {
+      const rulesDB = JSON.parse(localData)
+      if(rulesDB.some(r => r.lnk.concat([r.fmt]).includes(fmtText))) {
+        log.innerText = "Error: already has a same cmd."
+      } else {
+        rulesDB.push({tpl: tplText, fmt: fmtText, inf: infText, lnk: []})
+        window.localStorage.setItem("rulesDB", JSON.stringify(rulesDB))
+        log.innerText = "Successfuly add cmd: \n" + fmtText + " → " + tplText
+      }
+    }
+  </script>
+</body>
+</html>
