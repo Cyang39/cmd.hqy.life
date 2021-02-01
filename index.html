@@ -43,11 +43,17 @@
       }
       return _render(findRuleTpl(rule, rulesDB), params)
     }
-    const bestRule = function (rules) {
+    const bestRule = function (rules, cmdText) {
       const no_and$ = rules.find(r => !r.includes("$") && !r.includes("_"))
       if (no_and$) return no_and$
+
       const no$ = rules.find(r => !r.includes("$"))
       if (no$) return no$
+
+      const ruleArrs = rules.map(x => x.split(" "))
+      const sameLength = rules.find(x => x.length === cmdText.split("+").length)
+      if(sameLength) return sameLength
+
       const indexsOf$ = rules.map(r => r.indexOf("$"))
       const lastIndex = Math.max(...indexsOf$)
       return rules.find(r => r[lastIndex] === "$")
@@ -63,7 +69,9 @@
     const rules = rulesDB.reduce((res, cur) => res.concat([cur.fmt]).concat(cur.lnk), [])
     const matchedRules = rules.filter(r => match(r, cmdText))
     if (matchedRules.length > 0) {
-      const theRule = bestRule(matchedRules)
+      const theRule = bestRule(matchedRules, cmdText)
+      // console.log(matchedRules)
+      // console.log(theRule)
       window.location.href = render(theRule, cmdText)
     } else {
       window.document.body.innerText = "There is no match in your rules."
