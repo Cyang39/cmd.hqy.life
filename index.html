@@ -50,8 +50,9 @@
       const no$ = rules.find(r => !r.includes("$"))
       if (no$) return no$
 
-      const ruleArrs = rules.map(x => x.split(" "))
-      const sameLength = rules.find(x => x.length === cmdText.split("+").length)
+      const ruleLengthArrs = rules.map(x => x.split(" ").length)
+      const cmdLength = cmdText.split("+").length
+      const sameLength = rules.find((x, i) => ruleLengthArrs[i] === cmdLength)
       if(sameLength) return sameLength
 
       const indexsOf$ = rules.map(r => r.indexOf("$"))
