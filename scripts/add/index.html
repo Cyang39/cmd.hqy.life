@@ -12,8 +12,8 @@
     const search2 = window.location.search.match(/fmt=([^&]*)/)
     const search3 = window.location.search.match(/inf=([^&]*)/)
     const tplText = search ? window.decodeURIComponent(search[1]) : ""
-    const fmtText = search2 ? search2[1] : ""
-    const infText = search3 ? search3[1] : ""
+    const fmtText = search2 ? window.decodeURIComponent(search2[1]) : ""
+    const infText = search3 ? window.decodeURIComponent(search3[1]) : ""
     const localData = window.localStorage.getItem("rulesDB")
     if(!localData) {
       log.innerText = "Info: no database on localstorage."
