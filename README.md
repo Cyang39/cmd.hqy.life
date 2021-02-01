@@ -1,7 +1,7 @@
 # cmd.hqy.life
 A way to use url address bar.
-## Shortcut for a long url
-![](docs/imgs/shortcut-for-url.gif)
+## Short name for long url
+![](scripts/add/imgs/screenshot.gif)
 ## Use any search engine
 ![](docs/imgs/any-search-engine.gif)
 ## Open native app quickly
