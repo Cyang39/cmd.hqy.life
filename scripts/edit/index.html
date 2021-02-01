@@ -1,10 +1,14 @@
-// if(!window.localStorage.getItem("rulesDB")) {
-//   // TODO: 初始化
-// }
-// window.document.getElementsByName("rules")[0].value = window.localStorage.getItem("rulesDB")
-// window.document.getElementsByName("save")[0].addEventListener("click", function() {
-//   window.localStorage.setItem("rulesDB",  window.document.getElementsByName("rules")[0].value)
-// })
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edit Rules</title>
+  <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.min.js"></script>
+</head>
+<body>
+  <div id="edit"></div>
+  <script>
 
 new Vue({
   el: "#edit",
@@ -82,3 +86,7 @@ new Vue({
     }
   }
 })
+
+  </script>
+</body>
+</html>
