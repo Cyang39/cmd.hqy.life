@@ -9,6 +9,11 @@
 <body>
   <div id="edit"></div>
   <script>
+// init for empty database
+const localDB = window.localStorage.getItem("rulesDB")
+if(!localDB) {
+  window.localStorage.setItem("rulesDB", '[{"fmt":"cmd edit","tpl":"/scripts/edit","inf":"","lnk":["cmdedit","c edit","edit"]},{"fmt":"google $","tpl":"https://www.google.com/search?q=${0}","inf":"Google Search","lnk":["g $","$"]},{"fmt":"add _ $","tpl":"/scripts/add?fmt=${0}&tpl=${1}","inf":"","lnk":["cmd add _ $"]}]')
+}
 
 new Vue({
   el: "#edit",
