@@ -64,7 +64,7 @@
     const cmdText = search ? search[1] : ""
 
     const readLocal = window.localStorage.getItem("rulesDB")
-    if(!readLocal) window.location.href="scripts/edit"
+    if(!readLocal) window.location.href="/edit"
     const rulesDB = JSON.parse(readLocal)
 
     const rules = rulesDB.reduce((res, cur) => res.concat([cur.fmt]).concat(cur.lnk), [])

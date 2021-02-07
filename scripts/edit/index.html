@@ -9,6 +9,7 @@
 <body>
   <div id="edit"></div>
   <script>
+window.history.replaceState(null, "", "/edit")
 // init for empty database
 const localDB = window.localStorage.getItem("rulesDB")
 if(!localDB) {

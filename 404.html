@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Loading...</title>
+</head>
+<body>
+  <div id="show"></div>
+  <script>
+    const url = new URL(window.location.href)
+    const router = [
+      ["/edit", "/scripts/edit"]
+    ]
+    const find = router.find(r => r[0] === url.pathname)
+    if(find) {
+      window.location.href = find[1]
+    } else {
+      window.document.getElementById("show").innerText = "page not found."
+    }
+  </script>
+</body>
+</html>
