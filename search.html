@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>cmd.hqy.life</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+    }
+    .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    .search-box {
+      display: flex;
+      width: 700px;
+    }
+    .search-input {
+      padding: 10px;
+      font-size: 16px;
+      border: 1px solid #ddd;
+      border-radius: 4px 0 0 4px;
+      flex: 1;
+    }
+    .search-button {
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #f2f2f2;
+      border: 1px solid #ddd;
+      border-radius: 0 4px 4px 0;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="search-box">
+      <input type="text" id="search-input" class="search-input" placeholder="请输入搜索内容">
+      <button id="search-button" class="search-button">搜索</button>
+    </div>
+  </div>
+
+  <script>
+    const searchInput = document.getElementById('search-input');
+    const searchButton = document.getElementById('search-button');
+
+    function redirectToSearch() {
+      const query = searchInput.value;
+      if (query) {
+        const url = `https://cmd.hqy.life/?q=${encodeURIComponent(query)}`;
+        window.location.href = url;
+      }
+    }
+
+    searchInput.addEventListener('keydown', function(event) {
+      if (event.key === 'Enter') {
+        redirectToSearch();
+      }
+    });
+
+    searchButton.addEventListener('click', redirectToSearch);
+  </script>
+</body>
+</html>
